@@ -1,18 +1,19 @@
 <?php
-include "pagetpl.php";
-
-include_once "session-start.php";
-
 header("HTTP/1.1 503 Service Unavailable");
-pageHeader("503 - Service Unavailable");
 ?>
-<h1>Service Unavailable</h1>
-
-<p><span class=details>HTTP Error 503</span>
-
-<p>The server is temporarily unable due to maintenance downtime or capacity problems. Please try again later.
-
-
-<?php
-pageFooter();
-?>
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <title>IFDB Server</title>
+ </head>
+ <body>
+The new IFDB server is not yet active.
+Until it is, please use the
+<a href="https://ifdb.tads.org">original IFDB server</a>
+at
+<a href="https://ifdb.tads.org">ifdb.tads.org</a>.
+<p>
+ifdb.org is operated by the
+<a href="https://iftechfoundation.org/">Interactive Fiction Technology Foundation</a>.
+ </body>
+</html>
