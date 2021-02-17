@@ -7,11 +7,7 @@ header("HTTP/1.1 503 Service Unavailable");
   <title>IFDB Server</title>
  </head>
  <body>
-The new IFDB server is not yet active.
-Until it is, please use the
-<a href="https://ifdb.tads.org">original IFDB server</a>
-at
-<a href="https://ifdb.tads.org">ifdb.tads.org</a>.
+The new IFDB server is coming soon!
 <p>
 ifdb.org is operated by the
 <a href="https://iftechfoundation.org/">Interactive Fiction Technology Foundation</a>.
