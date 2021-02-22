@@ -1,5 +1,7 @@
 FROM php:7-apache
 
+COPY nuke-banned-sessions.sh.php /usr/local/sbin/nuke-banned-sessions.sh.php
+
 RUN docker-php-ext-install mysqli
 RUN apt-get update -y && apt-get install -y zlib1g-dev libpng-dev libjpeg-dev
 RUN docker-php-ext-configure gd --with-jpeg

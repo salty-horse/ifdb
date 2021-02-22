@@ -2923,6 +2923,10 @@ function close_user_acct($db, $uid, $stat, &$progress)
     // unlock tables, if we haven't already
     if ($tableLocks)
         mysql_query("unlock tables");
+    
+    if ($result) {
+        error_log(`/usr/local/sbin/nuke-banned-sessions.sh.php $uid`);
+    }
 
     // return the success/failure indication
     return $result;
