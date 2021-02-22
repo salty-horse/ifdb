@@ -2923,6 +2923,24 @@ function close_user_acct($db, $uid, $stat, &$progress)
     // unlock tables, if we haven't already
     if ($tableLocks)
         mysql_query("unlock tables");
+    
+    if ($result) {
+        $session_save_path = session_save_path();
+        if ($session_save_path === "") $session_save_path = '/tmp';
+        $sessionFiles = scandir($session_save_path);
+        foreach ($sessionFiles as $sessionFileName) {
+            if(strpos($sessionFileName,"sess_") === 0) {
+                $sessionName = str_replace("sess_","",$sessionFileName);
+                $sessionFile = $session_save_path."/".$sessionFileName;
+                $session_contents = file_get_contents($sessionFile);
+                // it would be nice to use a real session parser here, but, meh, it's just session data
+                if (strpos($session_contents, $uid) !== false) {
+                    unlink($sessionFile);
+                    error_log("deleted session $sessionFile");
+                }
+            }
+        }
+    }
 
     // return the success/failure indication
     return $result;
