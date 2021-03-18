@@ -83,7 +83,8 @@ page where there are data entry fields, buttons, and so on.  We use
 the same style here as in the main page body.
 */
 form {
-    font:  100%/140% Verdana, Arial, Helvetica, Sans-Serif;
+    font: Verdana, Arial, Helvetica, Sans-Serif;
+    margin: 0em;
 }
 
 /*
@@ -100,6 +101,29 @@ here as in the main page body.
 */
 table tr td {
     font:  100%/140% Verdana, Arial, Helvetica, Sans-Serif;
+}
+
+.flexer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: -0.5em;
+}
+
+.column{
+    flex: 1;
+    margin: 0.5em;
+}
+
+.home-sidebar-col{
+    flex-basis: 15rem;
+    flex-grow: 1;
+}
+
+.home-main-col{
+    flex-basis: 0;
+    flex-grow: 999;
+    min-width: 50%;
 }
 
 /*
@@ -173,11 +197,7 @@ a.topbar {
 }
 
 /*
-The "topctl" division is the area at the top under the main IFDB banner
-where we show the quick navigation controls.  Within this area, we have
-a table (for spacing the navigation links) and a form (for the "Search"
-box), so we have to specify how we want these laid out.  Throughout
-this division, we use a slightly smaller version of the main page font.
+The "topctl" division is the area at the top under the main IFDB banner where we show the quick navigation controls. Within this area, we have a form (for the "Search" box), so we have to specify how we want these laid out. Throughout this division, we use a slightly smaller version of the main page font.
 */
 div.topctl {
     font:  100%/140% Verdana, Arial, Helvetica, Sans-Serif;
@@ -189,23 +209,19 @@ div.topctl {
     border-bottom: thin dotted #d0d0d0;
     max-width: calc(100ch / 0.95);
 }
-div.topctl table {
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+
+.topctl {
+    margin: auto;
+    max-width: 100ch;
 }
-div.topctl table tr {
-    margin: 0 0 0 0;
-    padding: 0 0 00;
-}
-div.topctl table tr td {
-    font-size: 80%;
-    margin: 0 0 0 0;
-    padding: 0 1em 0 1em;
-}
-div.topctl form {
-    font-size: 95%;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+
+.topctl nav{
+    font: 0.85em Verdana, Arial, Helvetica, Sans-Serif;
+    display: flex; 
+    flex-wrap: wrap; 
+    flex-direction: row; 
+    align-items: baseline; 
+    justify-content: space-between;
 }
 
 /*
@@ -220,6 +236,18 @@ div.main {
     max-width: 100ch;
     padding: 1em 1em 1em 1em;
     margin: 0 auto;
+}
+
+.aside-box{
+    border-top: thin solid #e8e8FF;
+    background: #F8F8FF;
+    font-size: 0.85em;
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.aside-box h3{
+    margin: 0em;
 }
 
 /*
@@ -955,11 +983,9 @@ The "footer" division style is for the area with the navigation links
 at the bottom of each page.
 */
 div.footer {
-    margin-top: 2em;
-    margin-bottom: 2em;
-    margin-left: 0px;
-    color: #808080;
-    font-size: 70%;
+    margin: 2em;
+    font-size: 0.7em;
+    text-align: center;
 }
 
 /*
@@ -979,11 +1005,11 @@ divide the page into major sections.  "headline1" is an add-in class
 for the topmost headline - it omits the top margin so that the the
 top headline isn't spaced out from the top of the page.
 */
-div.headline {
+.headline {
     width: 100%;
     background: #f8f8ff;
     border-top: thin solid #e8e8ff;
-/*    font:  110% Verdana, Arial, Helvetica, Sans-Serif;*/
+
     font:  110% Georgia, Times New Roman, New York, Times, Serif;
     font-weight: normal;
     color: #000080;
@@ -991,7 +1017,7 @@ div.headline {
     display: flex;
     justify-content: space-between;
 }
-div.headline1 {
+.headline1 {
     margin-top: 0;
 }
 span.headlineRss {
@@ -1065,31 +1091,29 @@ table.botbar2 td {
 /*
 Control panel buttons
 */
-div.cpanelBtn {
+.cpanelBtn {
     font-size: 85%;
     border-top: 1px dotted #8080ff;
     margin: 0;
-    padding: 0 0 0 0.75ex;
-    cursor: pointer;
+    padding-left: 0.75em;
 }
-div.cpanelBtnTop {
+.cpanelBtnTop {
     margin: 0;
     border-top: none;
 }
-div.cpanelBtnHover {
-    margin: 0;
-    background: #90ffff;
+.cpanelBtn:hover {
+    background: #E2E2FF;
 }
-div.cpanelBtn a {
+.cpanelBtn a {
     text-decoration: none;
 }
-div.cpanelBtn a:hover {
+.cpanelBtn a:hover {
     text-decoration: underline;
 }
 img.cpanelBtnIcon {
     margin-right: 1ex;
 }
-div.cpanelHeading {
+.cpanelHeading {
     margin: 0;
     background: #E8E8FF;
     font-weight: bold;
@@ -2157,13 +2181,13 @@ span.sfl-save-autodesc {
     div.footer {
         font-size: 8pt;
     }
-    div.headline {
+    .headline {
         font-size: 110%;
         background: #202030;
         border-top: thin solid #303050;
         color: #d0d0ff;
     }
-    div.headline2 {
+    .headline2 {
         font-size: 110%;
         background: #202030;
         border-top: thin solid #303050;
@@ -2202,10 +2226,16 @@ span.sfl-save-autodesc {
     tr.boxhead h3 {
         color: #f0f0f0;
     }
-    div.cpanelBtnHover {
+
+    .aside-box{
+        border-top: thin solid #303030;
+        background: #101030;
+    }
+
+    .cpanelBtn:hover {
         background: #303058;
     }
-    div.cpanelHeading {
+    .cpanelHeading {
         background: #303050;
     }
     table.botbar2 {
