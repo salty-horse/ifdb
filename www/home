@@ -33,7 +33,7 @@ if ($debugflag) echo "debug mode enabled...<br>";
 <?php pageHeader("The Interactive Fiction Database - IF and Text Adventures")?>
 
 <div class="flexer">
-    <div class="column home-main-col">
+    <div class="column main-col">
         <div class="block">
             <div class="headline headline1">
                 Welcome to IFDB!
@@ -66,12 +66,12 @@ if ($debugflag) echo "debug mode enabled...<br>";
 
 
         <div class=flexer>
-            <div class="block column">
+            <div class="column main-col">
                 <h2 class="headline">Vote!</h2>
                 <?php include "components/poll-sampler.php"?>
             </div>
             
-            <div class="block column">
+            <div class="column sidebar-col">
                 <h2 class="headline">New to IF?</h2>
                 The IFDB <b>Download Adviser</b> can help get you up and running with the games you find on IFDB. Just click <img src="dlhelpbtn.gif" align="absmiddle" alt='The "Show me how!" button'> in any game's Download box for customized, step-by-step instructions for running the game on your system.
             </div>
@@ -84,7 +84,7 @@ if ($debugflag) echo "debug mode enabled...<br>";
 
     </div>
 
-    <div class="column home-sidebar-col">
+    <div class="column sidebar-col">
 
         <div class="aside-box">
             <?php include "components/control-panel.php"?>
