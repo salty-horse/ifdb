@@ -417,17 +417,11 @@ function echoStylesheetLink()
             list($ssid, $ssauthor) = mysql_fetch_row($result);
     }
 
-    // failing that, check to see if we're on an iPod or iPhone - if so,
+    // failing that, check to see if we're on mobile - if so,
     // use the special default style sheet for those devices
     if (!$ssid && is_mobile()) {
-        // the iPod/iPhone style sheet has ID=6 - it's really an ordinary
-        // style sheet, created by Craig Smith (craig@ni.com), but it's
-        // distinguished as the default style sheet for these devices
-        $result = mysql_query(
-            "select stylesheetid, userid from stylesheets
-             where stylesheetid = '6'", $db);
-        if (mysql_num_rows($result) > 0)
-            list($ssid, $ssauthor) = mysql_fetch_row($result);
+        //pull in the old mobile stylesheet, locally this time
+        echo "<link rel=\"stylesheet\" href=\"/legacy-mobile-style.css\">";
     }
 
     // check for a temporary CSS override
