@@ -1498,7 +1498,7 @@ if (!isEmpty($seriesname)) {
         // Also exclude games that are already on the current user's
         // play list or wish list - they obviously already know about
         // these games, so there's no reason to recommend them.
-        if ($curuser) {
+        if ($curuser && !$cssOverride) {
             $joinOtherUser = "left outer join reviews as r3"
                              . "  on r3.gameid = r2.gameid"
                              . "  and r3.id != r2.id"
@@ -1557,7 +1557,7 @@ if (!isEmpty($seriesname)) {
             $crossrecs[] = mysql_fetch_array($result, MYSQL_ASSOC);
 
         // add current-user exclusions for explicit cross-recs, if logged in
-        if ($curuser) {
+        if ($curuser && !$cssOverride) {
             $joinOtherUser = "left outer join playedgames as pg"
                              . "  on pg.userid = '$curuser'"
                              . "  and pg.gameid = c.togame"
@@ -1686,7 +1686,7 @@ if ($embargoCnt > 0)
     if (!isEmpty($desc) && ($detailView || $historyView)) {
 ?>
          <h3>About the Story</h3>
-         <?php echo $desc ?>
+         <p><?php echo $desc ?></p>
 <?php
     }
 
@@ -1716,11 +1716,11 @@ if ($embargoCnt > 0)
                        . " title=\"What does this mean?\">"
                        . "Forgiveness Rating</a>: $forgiveness<br>" ?>
                <?php if(!isEmpty($bafsid))
-                   echo "<a class=silent href=\"http://www.wurb.com/if\"
-                        title=\"Go to Baf's Guide to the IF Archive\">
-                        Baf's Guide</a> ID:
+                   echo "<a class=silent " . helpWinHRef("help-bafs")
+                       . " title=\"What's a Baf's Guide ID?\">
+                        Baf's Guide ID</a>:
                      <a class=silent
-                      href=\"http://www.wurb.com/if/game/$bafsid\"
+                      href=\"https://web.archive.org/web/20110100000000/http://www.wurb.com/if/game/$bafsid\"
                         title=\"Go to the Baf's Guide listing for this game\">
                         $bafsid</a>
                      <br>" ?>
@@ -2235,7 +2235,7 @@ if (count($inrefs) != 0 && !$historyView) {
 
         ?>
 
-        <span id="tagPre" class=details></span>
+        <p><span id="tagPre" class=details></span>
         <span class=details style="margin-left: 1ex;">
            - <a href="showtags?limit=50">View the most common tags</a>
            (<?php echo helpWinLink("help-tags", "What's a tag?")
@@ -2243,7 +2243,7 @@ if (count($inrefs) != 0 && !$historyView) {
 //           onclick="javascript:helpWin('help-tags');return false;"
 //           >What's a tag?</a>
            ?>)
-        </span>
+        </span></p>
         <div class=indented>
            <table id="tagTable" border=0 class=tags>
            </table>
