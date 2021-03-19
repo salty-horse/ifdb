@@ -200,6 +200,11 @@ if (isset($_REQUEST['reviewvotes'])) {
             pageFooter();
             exit();
         }
+        if (mysql_num_rows($result) === 0) {
+            echo "This user hasn't voted any reviews helpful/unhelpful.";
+            pageFooter();
+            exit();
+        }
 
         ?>
         <h2>Summary</h2>
