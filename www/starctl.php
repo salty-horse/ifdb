@@ -140,14 +140,21 @@ function showStarCtl($id, $init, $clickFunc, $leaveFunc)
                . "#$id { vertical-align:middle;cursor:pointer; display: inline; }\n"
                . "</style>\n";
 
-        $str .= "<img id=\"{$id}\" "
-                . "src=\"img/blank.gif\" class=\"star$init\">"
-                . addSiblingEventListeners([
-                    ['mouseover', "mouseOverStarCtl('$id', event);"],
-                    ['mousemove', "mouseOverStarCtl('$id', event);"],
-                    ['mouseout', "mouseOutStarCtl('$id', event, $leaveFunc);"],
-                    ['click', "mouseClickStarCtl('$id', event, $clickFunc);"],
-                ]);
+        /* $str .= "<img id=\"{$id}\" " */
+        /*         . "src=\"img/blank.gif\" class=\"star$init\">" */
+        /*         . addSiblingEventListeners([ */
+        /*             ['mouseover', "mouseOverStarCtl('$id', event);"], */
+        /*             ['mousemove', "mouseOverStarCtl('$id', event);"], */
+        /*             ['mouseout', "mouseOutStarCtl('$id', event, $leaveFunc);"], */
+        /*             ['click', "mouseClickStarCtl('$id', event, $clickFunc);"], */
+        /*         ]); */
+        $str .= "<div class=\"{$id}\" aria-label=\"Rating {$init} out of 5\">" .
+        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-1\" aria-label=\"Rate 1 out of 5\">" .
+        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-2\" aria-label=\"Rate 2 out of 5\">" .
+        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-3\" aria-label=\"Rate 3 out of 5\">" .
+        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-4\" aria-label=\"Rate 4 out of 5\">" .
+        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-5\" aria-label=\"Rate 5 out of 5\">" .
+        "</div>";
     }
 
     return $str;
