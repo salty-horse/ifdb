@@ -240,7 +240,7 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
             "added:" => array("created", 4),
             "system:" => array("system", 0),
             "series:" => array("seriesname", 0),
-            "tag:" => array("tags", 3),
+            "tag:" => array("tags", 5),
             "bafs:" => array("bafsid", 2),
             "rating:" => array("avgRating", 1, true),
             "#reviews:" => array("numMemberReviews",1, true),
@@ -394,6 +394,7 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
     $where = "";
     $having = "";
     $relevance = "";
+    $tagsToMatch = [];
 
     // add in the full-text part, if applicable
     if (count($words))
@@ -512,7 +513,7 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
             break;
 
         case 3:
-            // whole-word text matches
+            // whole-word text matches - currently unused
             $expr = "$col rlike '[[:<:]]"
                     . mysql_real_escape_string(quoteSqlRLike($txt), $db)
                     . "[[:>:]]'";
@@ -543,7 +544,10 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
             } else
                 $expr = "$year = '" . mysql_real_escape_string($txt, $db) . "'";
             break;
-
+        case 5:
+            // tags
+            $tagsToMatch[] = $txt;
+            break;
         case 99:
             // special-case handling
             switch ($col) {
@@ -987,9 +991,31 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
     if ($where == "")
         $where = "1";
 
-    // if there's a HAVING clause, plug in the HAVING phase
+    // if there's a HAVING clause, plug in the HAVING phrase
     if ($having != "")
         $having = "having $having";
+
+    // Build tags join
+    $tagsTable = "";
+    if ($tagsToMatch) {
+        // Limit number of tags to avoid abuse
+        $tagsToMatch = array_slice($tagsToMatch, 0, 20);
+
+        $tagsTables = [];
+        $tagsWhereParts = [];
+        $tagsOnParts = [];
+        for ($i = 0; $i < count($tagsToMatch); $i++) {
+            $t = "gametags as t$i";
+            if ($i > 0) {
+                $t .= " on t0.gameid = t$i.gameid";
+            }
+            $tagsTables[] = $t;
+            $tagsWhereParts[] = "t$i.tag = ?";
+        }
+        $tagsJoin = implode(' join ', $tagsTables);
+        $tagsWhere = implode(' and ', $tagsWhereParts);
+        $tagsTable = "join (select distinct t0.gameid from $tagsJoin where $tagsWhere) as gt on games.id = gt.gameid";
+    }
 
     // build the SELECT statement
     $sql = "select sql_calc_found_rows
@@ -997,6 +1023,7 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
               $relevance
             from
               $tableList
+              $tagsTable
             where
               $where
               $baseWhere
@@ -1007,8 +1034,10 @@ function doSearch($db, $term, $searchType, $sortby, $limit, $browse)
               $baseOrderBy
             $limit";
 
+    $bindParamters = array_merge($tagsToMatch, $whereParameters);
+
     // run the query
-    $result = mysqli_execute_query($db, $sql, $whereParameters);
+    $result = mysqli_execute_query($db, $sql, $bindParamters);
     if (!$result) error_log(mysql_error($db));
 //    echo "<p>$sql<p>" . mysql_error($db) . "<p>";  // DIAGNOSTICS
 
