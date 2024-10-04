@@ -1,5 +1,7 @@
 // Copyright 2009 Michael J Roberts
 
+'use strict';
+
 function helpWin(url)
 {
     win = window.open(url, "IFDBHelp",
@@ -202,5 +204,32 @@ function replaceSelRange(ele, txt, selectNewText)
         setSelRange(ele,
                     { start: selectNewText ? r.start : r.start + txt.length,
                       end: r.start + txt.length });
+    }
+}
+
+function initStarCtl(containerId, initialRating, clickFunc) {
+    setStarCtlValue(containerId, initialRating);
+    document.querySelectorAll(`#${containerId} input`).forEach((elem) => {
+        if (elem.value == '0')
+            return;
+        let label = elem.nextSibling;
+        label.addEventListener('click', (event) => {
+            event.preventDefault();
+            clickFunc(elem.value);
+            // TODO: only update UI if click was request to server was successful
+            if (true) {
+                setStarCtlValue(containerId, elem.value);
+            }
+        });
+    });
+}
+
+function setStarCtlValue(containerId, rating) {
+    let container = document.getElementById(containerId);
+    container.querySelector(`input[value="${rating}"]`).checked = true;
+    if (rating) {
+        container.ariaLabel = `Your rating is ${rating} out of 5`;
+    } else {
+        container.ariaLabel = 'You did not rate this game';
     }
 }

@@ -6,6 +6,10 @@ include_once "session-start.php";
 include_once "login-persist.php";
 $curuser = checkPersistentLogin();
 
+// connect to the database
+include_once "dbconnect.php";
+$db = dbConnect();
+
 include_once "pagetpl.php";
 include_once "util.php";
 include "starctl.php";
@@ -1294,7 +1298,6 @@ function updateUnwishList(id, stat)
         list($myCrossRecs) = mysql_fetch_row($result);
     }
 
-    initStarControls();
     global $nonce;
     echo "<style nonce='$nonce'>\n"
         . ".viewgame__playedSection { margin: 1.25ex 0 0.75ex 0; }\n"

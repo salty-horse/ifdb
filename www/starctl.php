@@ -1,161 +1,29 @@
 <?php
 
-include_once "session-start.php";
-include_once "dbconnect.php";
-include_once "login-persist.php";
-
-$db = dbConnect();
-$curuser = checkPersistentLogin();
-global $accessibility;
-$accessibility = false;
-
-if ($curuser) {
-    $result = mysql_query(
-        "select accessibility from users where id='$curuser'", $db);
-    list($accessibility) = mysql_fetch_row($result);
-}
-
-function initStarControls()
-{
-    global $accessibility;
-
-    if ($accessibility) {
-        // Accessible version - use a drop list for the rating selector.
-
-        ?>
-
-<script type="text/javascript" nonce="<?php global $nonce; echo $nonce; ?>">
-<!--
-function mouseClickStarCtl(id, e, clickFunc)
-{
-    var stars = document.getElementById(id).value;
-    clickFunc(stars);
-}
-function mouseOutStarCtl(id, e, cbFunc)
-{
-    var stars = document.getElementById(id).value;
-    if (cbFunc != null)
-        cbFunc(stars);
-}
-function setStarCtlValue(id, val)
-{
-    document.getElementById(id).value = val;
-}
-//-->
-</script>
-
-        <?php
-
-    } else {
-        // Standard version - use the animated javascript star control,
-        // with automatic mouse rollover highlighting.
-
-        ?>
-<script type="text/javascript" nonce="<?php global $nonce; echo $nonce; ?>">
-<!--
-var starRatings = {};
-function starsFromMouse(id, e)
-{
-    var x;
-    if (e.pageX)
-        x = e.pageX;
-    else if (e.clientX)
-        x = e.clientX
-            + (document.documentElement.scrollLeft
-               ? document.documentElement.scrollLeft
-               : document.body.scrollLeft);
-    var sEle = document.getElementById(id);
-    for (var ele = sEle ; ele != document.body ;
-         x -= ele.offsetLeft, ele = ele.offsetParent) ;
-
-    var stars = Math.round(x/(sEle.offsetWidth/5) + 0.5);
-    return (stars < 1 ? 1 : stars > 5 ? 5 : stars);
-}
-function mouseOverStarCtl(id, e)
-{
-    var stars = starsFromMouse(id, e);
-    showStarCtlValue(id, stars);
-}
-function mouseClickStarCtl(id, e, clickFunc)
-{
-    var stars = starRatings[id] = starsFromMouse(id, e);
-    showStarCtlValue(id, stars);
-    clickFunc(starRatings[id]);
-}
-function mouseOutStarCtl(id, e, cbFunc)
-{
-   var stars = starRatings[id];
-   showStarCtlValue(id, stars);
-   if (cbFunc != null)
-       cbFunc(stars);
-}
-function setStarCtlValue(id, val)
-{
-    starRatings[id] = val;
-    showStarCtlValue(id, val);
-}
-function showStarCtlValue(id, val)
-{
-    document.getElementById(id).className = "star" + val;
-}
-//-->
-</script>
-        <?php
-    }
-}
-
 function showStarCtl($id, $init, $clickFunc, $leaveFunc)
 {
-    global $accessibility;
-
     if (!$init)
         $init = 0;
 
-    if ($accessibility) {
-        // accessible version - use a simple drop list
-
-        $str = "<select id=\"$id\">"
-               . addEventListener('change', "mouseClickStarCtl('$id', event, $clickFunc);")
-               . addEventListener('blur', "mouseOutStarCtl('$id', event, $leaveFunc);")
-               ;
-        $disps = array("Not Rated", "1 Star", "2 Stars", "3 Stars",
-                       "4 Stars", "5 Stars");
-        for ($i = 0 ; $i <= 5 ; $i++) {
-            $str .= "<option value=\"$i\"";
-            if ($i == $init)
-                $str .= " selected";
-            $str .= ">{$disps[$i]}</option>";
-        }
-        $str .= "</select>";
-
-    } else {
-        // standard version - use the star images
-        global $nonce;
-        $str = "<script type=\"text/javascript\" nonce=\"$nonce\">\r\n"
-               . "<!--\r\n"
-               . "starRatings['$id'] = $init;\r\n"
-               . "//-->\r\n"
-               . "</script>\r\n"
-               . "<style nonce='$nonce'>\n"
-               . "#$id { vertical-align:middle;cursor:pointer; display: inline; }\n"
-               . "</style>\n";
-
-        /* $str .= "<img id=\"{$id}\" " */
-        /*         . "src=\"img/blank.gif\" class=\"star$init\">" */
-        /*         . addSiblingEventListeners([ */
-        /*             ['mouseover', "mouseOverStarCtl('$id', event);"], */
-        /*             ['mousemove', "mouseOverStarCtl('$id', event);"], */
-        /*             ['mouseout', "mouseOutStarCtl('$id', event, $leaveFunc);"], */
-        /*             ['click', "mouseClickStarCtl('$id', event, $clickFunc);"], */
-        /*         ]); */
-        $str .= "<div class=\"{$id}\" aria-label=\"Rating {$init} out of 5\">" .
-        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-1\" aria-label=\"Rate 1 out of 5\">" .
-        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-2\" aria-label=\"Rate 2 out of 5\">" .
-        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-3\" aria-label=\"Rate 3 out of 5\">" .
-        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-4\" aria-label=\"Rate 4 out of 5\">" .
-        "  <input type=\"button\" class=\"star\" name=\"star\" id=\"star-5\" aria-label=\"Rate 5 out of 5\">" .
-        "</div>";
+    global $nonce;
+    $str = "<div id=\"$id\" class=\"starContainer\" role=\"radiogroup\">";
+    // Radio button 0 is required for the CSS subsequent-sibling selectors to work.
+    // 'checked' is set here to avoid flashing when the page is loaded
+    $str .= "<input type=\"radio\" name=\"$id\" value=\"0\">";
+    for ($i = 1; $i <= 5; $i++) {
+        $str .= "<input type=\"radio\" id=\"$id-$i\" name=\"$id\" value=\"$i\">";
+        $str .= "<label for=\"$id-$i\" aria-label=\"Rate $i out of 5\"><svg viewBox=\"0 0 512 512\"><path d=\"M512 198.525l-176.89-25.704-79.11-160.291-79.108 160.291-176.892 25.704 128 124.769-30.216 176.176 158.216-83.179 158.216 83.179-30.217-176.176 128.001-124.769z\"></path></svg></label>";
     }
+    $str .= "</div>";
+    $str .= "<script type=\"text/javascript\" nonce=\"$nonce\">\r\n"
+           . "<!--\r\n"
+           . "initStarCtl('$id', $init, $clickFunc);\r\n"
+           . "//-->\r\n"
+           . "</script>\r\n"
+           . "<style nonce='$nonce'>\n"
+           . "#$id { vertical-align:middle;cursor:pointer; display: inline; }\n"
+           . "</style>\n";
+
 
     return $str;
 }

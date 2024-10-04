@@ -2069,6 +2069,54 @@ img.radio-checked {
     border: none;
 }
 
+.starContainer {
+    display: inline-block;
+}
+
+.starContainer input {
+    display: none;
+}
+
+.starContainer svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+	stroke: currentColor;
+}
+
+.starContainer label {
+	display: inline;
+	font-size: 2em;
+	height: 1.2em;
+	color: #036;
+	cursor: pointer;
+	/* Transparent border-bottom avoids jumping
+	   when a colored border is applied
+		 on :hover/:focus */
+	border-bottom: 2px solid transparent;
+}
+
+.starContainer input:checked ~ label {
+	color: #999;
+}
+.starContainer input:checked + label {
+	color: #036;
+	border-bottom-color: #036;
+}
+.starContainer input:focus + label {
+	border-bottom-style: dotted;
+}
+.starContainer:hover input + label {
+	color: #036;
+}
+.starContainer input:hover ~ label,
+.starContainer input:focus ~ label {
+	color: #999;
+}
+.starContainer input:hover + label,
+.starContainer input:focus + label {
+	color: #036;
+}
 
 /*
 The various star images.  The number after "star" gives the number of
