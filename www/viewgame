@@ -1247,6 +1247,9 @@ function clearRating()
 }
 function mouseOutRating(rating)
 {
+    // TODO:
+    // 1) Always call this when using keyboard.
+    // 2) add "clear rating" before waiting for mouseleave
     document.getElementById("ratingCaption").innerHTML =
         (rating != 0 ? "<b>My rating:</b>" : "<b>Rate it:</b>");
     var s = document.getElementById("clearRatingSpan");

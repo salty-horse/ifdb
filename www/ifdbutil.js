@@ -207,26 +207,33 @@ function replaceSelRange(ele, txt, selectNewText)
     }
 }
 
-function initStarCtl(containerId, initialRating, clickFunc) {
+function initStarCtl(containerId, initialRating, clickFunc, leaveFunc) {
     setStarCtlValue(containerId, initialRating);
-    document.querySelectorAll(`#${containerId} input`).forEach((elem) => {
-        if (elem.value == '0')
+    const container = document.getElementById(containerId);
+    container.addEventListener('mouseleave', () => {
+        leaveFunc(parseInt(container.querySelector('button[data-selected="1"]').dataset.value));
+    });
+    container.querySelectorAll('button').forEach((elem) => {
+        if (elem.dataset.value == '0')
             return;
-        let label = elem.nextSibling;
-        label.addEventListener('click', (event) => {
+        elem.addEventListener('click', (event) => {
             event.preventDefault();
-            clickFunc(elem.value);
+            clickFunc(event.currentTarget.dataset.value);
             // TODO: only update UI if click was request to server was successful
             if (true) {
-                setStarCtlValue(containerId, elem.value);
+                setStarCtlValue(containerId, elem.dataset.value);
             }
         });
     });
 }
 
 function setStarCtlValue(containerId, rating) {
-    let container = document.getElementById(containerId);
-    container.querySelector(`input[value="${rating}"]`).checked = true;
+    const container = document.getElementById(containerId);
+    const prevSelection = container.querySelector(`button[data-selected="1"]`);
+    if (prevSelection) {
+        delete prevSelection.dataset.selected;
+    }
+    container.querySelector(`button[data-value="${rating}"]`).dataset.selected = '1';
     if (rating) {
         container.ariaLabel = `Your rating is ${rating} out of 5`;
     } else {

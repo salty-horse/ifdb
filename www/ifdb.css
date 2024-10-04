@@ -2073,49 +2073,34 @@ img.radio-checked {
     display: inline-block;
 }
 
-.starContainer input {
+.starContainer button[data-value="0"] {
     display: none;
 }
 
-.starContainer svg {
+.starContainer button {
+	display: inline-block;
+	font-size: 2em;
 	width: 1em;
 	height: 1em;
 	fill: currentColor;
 	stroke: currentColor;
-}
-
-.starContainer label {
-	display: inline;
-	font-size: 2em;
-	height: 1.2em;
 	color: #036;
 	cursor: pointer;
+    background-color: transparent;
+    border: 0px;
 	/* Transparent border-bottom avoids jumping
 	   when a colored border is applied
 		 on :hover/:focus */
-	border-bottom: 2px solid transparent;
 }
 
-.starContainer input:checked ~ label {
+.starContainer button[data-selected="1"] ~ button {
 	color: #999;
 }
-.starContainer input:checked + label {
-	color: #036;
-	border-bottom-color: #036;
-}
-.starContainer input:focus + label {
-	border-bottom-style: dotted;
-}
-.starContainer:hover input + label {
+.starContainer:hover button + button {
 	color: #036;
 }
-.starContainer input:hover ~ label,
-.starContainer input:focus ~ label {
+.starContainer button:hover ~ button {
 	color: #999;
-}
-.starContainer input:hover + label,
-.starContainer input:focus + label {
-	color: #036;
 }
 
 /*
