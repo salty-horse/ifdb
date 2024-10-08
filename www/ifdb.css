@@ -1796,6 +1796,44 @@ Combo Box hidden list
     /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
 }
 
+.starContainer {
+    display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+.starContainer button[data-value="0"] {
+    display: none;
+}
+
+.starContainer button {
+	display: inline-block;
+	font-size: 2em;
+    width: var(--star-rating-size);
+    height: var(--star-rating-size);
+    background-size: var(--star-rating-size) var(--star-rating-size);
+	fill: currentColor;
+	stroke: currentColor;
+    background-image: var(--checked-image);
+	cursor: pointer;
+    background-color: transparent;
+    border: 0px;
+	/* Transparent border-bottom avoids jumping
+	   when a colored border is applied
+		 on :hover/:focus */
+}
+
+.starContainer button[data-selected="1"] ~ button {
+    background-image: var(--unchecked-image);
+}
+.starContainer:hover button + button {
+    background-image: var(--checked-image);
+}
+.starContainer button:hover ~ button {
+    background-image: var(--unchecked-image);
+}
+
+
 /*
 Close button for pop-up subforms
 */

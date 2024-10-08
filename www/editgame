@@ -520,7 +520,8 @@ if ($errMsg) {
                    . scriptSrc('/xmlreq.js'),
                    false);
 
-        initStarControls();
+        // TODO
+        // initStarControls();
         imageUploadScripts();
 ?>
 
