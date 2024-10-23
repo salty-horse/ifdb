@@ -2452,7 +2452,7 @@ var dbTagList = [
             $tag = jsSpecialChars($tag);
             echo ($i > 0 ? "," : "")
                 . "{tag: \"$tag\", tagcnt: $tagcnt, "
-                . "gamecnt: $gamecnt, isMine: $isMine, isNew: false}";
+                . "gamecnt: $gamecnt, isMine: $isMine}";
         }
 ?>
 ];
