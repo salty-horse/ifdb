@@ -202,14 +202,16 @@ class TagTable {
         this.dispDeleteTags();
     }
 
+    rememberTagList() {
+        this.memTagList = this.dbTagList.map((t) => {
+            return {tag: t.tag, tagcnt: t.tagcnt, gamecnt: t.gamecnt,
+                    isMine: t.isMine};
+        });
+    }
+
     editTags()
     {
-        this.memTagList = [];
-        for (var i = 0 ; i < this.dbTagList.length ; ++i) {
-            var t = this.dbTagList[i];
-            this.memTagList[i] = {tag: t.tag, tagcnt: t.tagcnt, gamecnt: t.gamecnt,
-                             isMine: t.isMine};
-        }
+        this.rememberTagList();
 
         document.getElementById("tagEditor").style.display = "initial";
         this.dispEditTags();
@@ -228,12 +230,7 @@ class TagTable {
 
     deleteTags()
     {
-        this.memTagList = [];
-        for (var i = 0 ; i < this.dbTagList.length ; ++i) {
-            var t = this.dbTagList[i];
-            this.memTagList[i] = {tag: t.tag, tagcnt: t.tagcnt, gamecnt: t.gamecnt,
-                             isMine: t.isMine};
-        }
+        this.rememberTagList();
 
         document.getElementById("tagDeletor").style.display = "initial";
         this.dispDeleteTags();
@@ -301,21 +298,20 @@ class TagTable {
             return;
         }
         var tags = resp.getElementsByTagName("tag");
-        for (var i = 0 ; i < tags.length ; ++i)
+        for (const tag of tags)
         {
-            var tag = tags[i];
             var name = tag.getElementsByTagName("name")[0].firstChild.data;
             var gamecnt = tag.getElementsByTagName("gamecnt")[0].firstChild.data;
             var tagcnt = tag.getElementsByTagName("tagcnt")[0].firstChild.data;
             name = name.toLowerCase();
 
-            for (var j = 0 ; j < this.memTagList.length ; j++)
+            for (const memTag of this.memTagList)
             {
-                if (this.memTagList[j].tag.toLowerCase() == name)
+                if (memTag.tag.toLowerCase() == name)
                 {
-                    this.memTagList[j].gamecnt = parseInt(gamecnt);
-                    this.memTagList[j].tagcnt = parseInt(tagcnt);
-                    this.memTagList[j].isNew = false;
+                    memTag.gamecnt = parseInt(gamecnt);
+                    memTag.tagcnt = parseInt(tagcnt);
+                    memTag.isNew = false;
                     break;
                 }
             }
@@ -329,10 +325,9 @@ class TagTable {
         var fld = document.getElementById("myTagFld");
         if (trim(fld.value) == "")
             return;
-        var lst = fld.value.split(",");
-        for (var i = 0 ; i < lst.length ; i++)
+        for (let s of fld.value.split(","))
         {
-            var s = trim(lst[i]);
+            s = trim(s);
             if (s == "")
                 continue;
             var j;
