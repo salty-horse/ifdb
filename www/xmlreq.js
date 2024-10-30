@@ -83,3 +83,45 @@ function xmlChildText(parent, name)
             ? child[0].firstChild.data
             : null);
 }
+
+async function jsonSend(url, statusSpanID, cbFunc, content, silentMode)
+{
+    if (statusSpanID)
+        document.getElementById(statusSpanID).innerHTML = "";
+
+    const options = {};
+    if (content != null) {
+        options.method = 'POST';
+        options.body = JSON.stringify(content);
+    }
+
+    let jsonResponse = null;
+    try {
+        const response = await fetch(url, options);
+        jsonResponse = response.json();
+        const msgspan = (statusSpanID
+                       ? document.getElementById(tracker.statusSpanID)
+                       : null);
+
+        if (!response.ok || !response)
+            throw new Error();
+
+        if (msgspan) {
+            const lbl = jsonResponse.label;
+            if (lbl && lbl.length > 0)
+                msgspan.innerHTML = lbl[0].firstChild.data;
+        }
+
+        const errmsg = jsonResponse.error;
+        if (errmsg)
+            alert(errmsg);
+    } catch (e) {
+        if (msgspan)
+            msgspan.innerHTML = "Not Saved";
+        if (!silentMode)
+            alert("An error occurred sending the update to the server. "
+                   + "(" + response.status + ") "
+                   + "Please try again later.");
+    }
+    cbFunc(jsonResponse);
+}
