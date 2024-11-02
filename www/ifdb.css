@@ -1662,6 +1662,28 @@ a.fancy-button:visited:not([href=needjs]) {
 }
 
 /*
+For use by inline forms
+*/
+form.inline {
+  display: inline;
+}
+
+button.link-button {
+  background: none;
+  border: none;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1em;
+}
+button.link-button:focus {
+  outline: none;
+}
+button.link-button:active {
+  color:red;
+}
+
+/*
 Button images.  These are identified in the HTML by a CLASS and an ID.
 For ease of upward compatibility, we address them here by CLASS; but a
 custom style sheet can use ID instead if it wants to address individual

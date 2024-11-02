@@ -12,12 +12,25 @@ include_once "pagetpl.php";
 include_once "dbconnect.php";
 $db = dbConnect();
 
+function addSubmitStyleLink($action, $ssid) {
+    if ($action == 'set') {
+        if ($ssid == 'default') {
+            $label = 'Switch to the IFDB default style';
+        } else {
+            $label = 'Set as my active style';
+        }
+    } else if ($action = 'delete') {
+        $label = "Yes, I'd really like to delete it";
+    }
+    return "<form method=\"post\" action=\"styles?$action=$ssid\" class=\"inline\">"
+        . "<button type=\"submit\" class=\"link-button\">$label</button></form>";
+}
+
 $setID = get_req_data('set');
 $editID = get_req_data('edit');
 $copyFromID = get_req_data('copyfrom');
 $deleteID = get_req_data('delete');
 $isGallery = isset($_REQUEST['gallery']);
-$isConfirmed = isset($_REQUEST['confirm']);
 
 $showBasicPage = false;
 $errMsg = false;
@@ -25,6 +38,12 @@ $succMsg = false;
 
 if ($setID) {
     // ---------------------- select new style in profile ------------------
+
+    if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        http_response_code(405);
+        echo "405 Method Not Allowed";
+        exit();
+    }
 
     // make sure we're logged in
     if ($userid) {
@@ -352,7 +371,7 @@ if ($setID) {
                   . "log in</a> to edit a style sheet.";
     } else if ($authorID != $userid) {
         $errMsg = "Sorry, you can only delete style sheets you created. ";
-    } else if (!$isConfirmed) {
+    } else if (($_SERVER['REQUEST_METHOD'] != 'POST')) {
 
         pageHeader("Please Confirm Deletion");
         echo "<h1>Please Confirm Deletion</h1>";
@@ -368,12 +387,11 @@ if ($setID) {
 
         echo "<p><b>Please confirm that you'd really like to delete "
             . "this style sheet.</b>"
-            . "<p><a href=\"styles?delete=$deleteID&confirm\">Yes, I'd "
-            . "really like to delete it</a><br>"
-            . "<a href=\"styles\">No, don't delete it</a>";
+            . "<p>" . addSubmitStyleLink("delete", $deleteID)
+            . "<br><a href=\"styles\">No, don't delete it</a>";
 
     } else {
-        // we got confirmation, so delete it
+        // This is a POST request, so delete it
         $result = mysqli_execute_query($db,
             "delete from stylesheets where stylesheetid = ?", [$ssid]);
 
@@ -520,8 +538,7 @@ if ($setID) {
             if ($curssid == $ssid)
                 echo "<i>This is your current active style</i>";
             else
-                echo "<a href=\"styles?set=$ssid\">"
-                    . "Set as my active style</a>";
+                echo addSubmitStyleLink("set", $ssid);
 
             echo "</span></td></tr></table>";
 
@@ -634,8 +651,7 @@ if ($userid) {
         echo "Your current style sheet is \"$title\", by "
             . "<a href=\"showuser?id=$authorID\">$author</a>."
             . "<p><a href=\"styles?gallery\">Style Sheet Gallery</a>"
-            . "<br><a href=\"styles?set=default\">Switch to the "
-            . "IFDB default style</a>";
+            . "<br>" . addSubmitStyleLink('set', 'default');
     } else if ($ssid) {
         echo "Unfortunately, the style sheet you selected most recently "
             . "has been deleted by its author, so you're currently "
@@ -711,8 +727,7 @@ if ($userid) {
             if ($ssid == $curssid)
                 echo "<i>This is your current active style</i>";
             else
-                echo "<a href=\"styles?set=$ssid\">Set as my "
-                    . "current style</a>";
+                echo addSubmitStyleLink("set", $ssid);
 
             echo " - <a href=\"css?id=$ssid\" target=\"_blank\">"
                 . "View Source</a>";
